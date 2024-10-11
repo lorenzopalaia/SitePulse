@@ -138,17 +138,21 @@ export default function New({ params }: { params: { setup: string } }) {
       const result = await response.json();
 
       if (!result.success) {
+        // toaster error
         throw new Error(result.message || "Script not found");
       }
-
-      setSetupStatus("done");
 
       const { error } = await supabase
         .from("websites")
         .update({ setup_status: "done" })
-        .eq("website_id", id);
+        .eq("id", id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating website:", error);
+        throw error;
+      }
+
+      setSetupStatus("done");
     } catch (error) {
       console.error("Error checking installation:", error);
     }
@@ -274,7 +278,7 @@ export default function New({ params }: { params: { setup: string } }) {
           <p className="text-primary-foreground">
             Your website has been successfully added
           </p>
-          <Link href={`/dahboard/${id}`}>
+          <Link href={`/dashboard/${id}`}>
             <Button className="w-full mt-4">Go to dashboard</Button>
           </Link>
         </div>
