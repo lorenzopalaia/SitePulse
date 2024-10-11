@@ -37,12 +37,16 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const excludedRoutes = ["/login", "/auth", "/api/events"];
-  const isExcluded = excludedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
+  // if route is /api/events, we don't need to check for user and we do not need to redirect
+  if (request.nextUrl.pathname.startsWith("/api/events")) {
+    return supabaseResponse;
+  }
 
-  if (!user && !isExcluded) {
+  if (
+    !user &&
+    !request.nextUrl.pathname.startsWith("/login") &&
+    !request.nextUrl.pathname.startsWith("/auth")
+  ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = "/login";

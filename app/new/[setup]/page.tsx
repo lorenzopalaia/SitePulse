@@ -262,7 +262,7 @@ export default function New({ params }: { params: { setup: string } }) {
             Install the tracking code on your site
           </p>
           <pre className="p-4 mt-4 rounded-lg bg-slate-800 text-primary-foreground">
-            {`<script defer data-website-id="${id}" data-domain="${domain}" src="https://${origin}/js/script.js"></script>`}
+            {`<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`}
           </pre>
           <Button className="w-full mt-4" onClick={() => handleInstall()}>
             {loading ? "Loading..." : "Check installation"}
