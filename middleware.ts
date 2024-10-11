@@ -2,7 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/api/events")) {
+  if (
+    request.nextUrl.pathname.startsWith("/api/events") ||
+    request.nextUrl.pathname.startsWith("/js/script.js")
+  ) {
     return NextResponse.next();
   }
 
