@@ -2,6 +2,8 @@ import { createClient } from "@/utils/supabase/server";
 
 import { redirect } from "next/navigation";
 
+import MainChart from "@/components/MainChart";
+
 export default async function Dashboard({
   params,
 }: {
@@ -20,6 +22,7 @@ export default async function Dashboard({
     .eq("user_id", user.user.id)
     .eq("id", params.websiteId)
     .single();
+
   if (websiteError || !website) {
     return <div>Error fetching website</div>;
   }
@@ -31,10 +34,22 @@ export default async function Dashboard({
     redirect(`/new/install?id=${website.id}&domain=${website.domain}`);
   }
 
+  const { data: events, error: eventsError } = await supabase
+    .from("events")
+    .select("*")
+    .eq("website_id", website.id);
+
+  if (eventsError || !events) {
+    return <div>Error fetching events</div>;
+  }
+
+  const eventsTimestamps = events.map((event) => event.timestamp);
+
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>Website ID: {params.websiteId}</p>
+    <div className="container mx-auto">
+      <h1 className="text-primary-foreground">Dashboard</h1>
+      <h2 className="text-primary-foreground">Website: {website.domain}</h2>
+      <MainChart eventsTimestamps={eventsTimestamps} />
     </div>
   );
 }
