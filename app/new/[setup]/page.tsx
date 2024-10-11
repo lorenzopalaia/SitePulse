@@ -66,6 +66,11 @@ export default function New({ params }: { params: { setup: string } }) {
     params.setup as "add" | "install" | "done"
   );
   const [loading, setLoading] = useState(false);
+  const [origin, setOrigin] = useState<string | null>(null);
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const supabase = createClient();
 
@@ -120,7 +125,7 @@ export default function New({ params }: { params: { setup: string } }) {
 
   const handleInstall = async () => {
     try {
-      const scriptToCheck = `<script defer data-website-id="${id}" data-domain="${domain}" src="https://sitepul.se/js/script.js"></script>`;
+      const scriptToCheck = `data-website-id="${id}"`;
 
       const response = await fetch("/api/check", {
         method: "POST",
@@ -245,7 +250,7 @@ export default function New({ params }: { params: { setup: string } }) {
                 className="w-full mt-4 bg-slate-700"
                 onClick={() => handleAdd()}
               >
-                Add
+                {loading ? "Loading..." : "Add website"}
               </Button>
             </CardContent>
           </Card>
@@ -257,13 +262,10 @@ export default function New({ params }: { params: { setup: string } }) {
             Install the tracking code on your site
           </p>
           <pre className="p-4 mt-4 rounded-lg bg-slate-800 text-primary-foreground">
-            {`<script defer data-website-id="${id}"
-                data-domain="${domain}"
-                src="https://sitepul.se/js/script.js">
-              </script>`}
+            {`<script defer data-website-id="${id}" data-domain="${domain}" src="https://${origin}/js/script.js"></script>`}
           </pre>
           <Button className="w-full mt-4" onClick={() => handleInstall()}>
-            Check installation
+            {loading ? "Loading..." : "Check installation"}
           </Button>
         </div>
       )}

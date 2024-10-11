@@ -60,7 +60,7 @@ export default function Header() {
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger className="bg-slate-800 rounded-md font-semibold text-primary-foreground text-md">
-                <span className="p-4">{user.email.split("@")[0]}</span>
+                <span className="p-4">{user?.email?.split("@")[0]}</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="border-0 bg-slate-800">
                 <DropdownMenuLabel className="text-primary-foreground">

@@ -64,13 +64,15 @@
   }
 
   window.sitepulse = function (eventType, customData) {
-    if (eventType === "signup") {
+    if (eventType === "initiate_checkout") {
+      trackCustomEvent("initiate_checkout", {});
+    } else if (eventType === "signup") {
       trackCustomEvent("signup", customData);
     } else if (eventType === "payment") {
       trackCustomEvent("payment", customData);
     } else {
       // console.warn("Unsupported event type:", eventType);
-      trackCustomEvent("custom", { eventName: eventType });
+      trackCustomEvent("custom", { eventName: eventType, ...customData });
     }
   };
 
