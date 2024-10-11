@@ -37,11 +37,6 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // if route is /api/events, we don't need to check for user and we do not need to redirect
-  if (request.nextUrl.pathname.startsWith("/api/events")) {
-    return supabaseResponse;
-  }
-
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
