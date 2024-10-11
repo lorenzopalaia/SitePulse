@@ -120,7 +120,7 @@
   }
 
   function generateSessionId() {
-    return "sxxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
       function (c) {
         const r = (Math.random() * 16) | 0,
