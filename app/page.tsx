@@ -72,40 +72,37 @@ export default async function Home() {
     0
   );
 
-  console.log(websitesWithVisitors);
-
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto pt-8">
       <div className="flex justify-between items-center">
-        <p className="text-primary-foreground">
-          You got <span className="font-bold">{totalVisitors}</span> visitors in
-          the last 24 hours.
+        <p className="font-bold text-foreground/75">
+          You got <span className="text-foreground">{totalVisitors}</span>{" "}
+          visitors in the last 24 hours.
         </p>
         <Link href="/new/add">
-          <Button className="bg-slate-800">
+          <Button variant="secondary" className="font-bold">
             <Plus size={16} className="mr-2" />
             Website
           </Button>
         </Link>
       </div>
-      <div className="grid grid-cols-3 gap-8 pt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
         {websitesWithVisitors &&
           websitesWithVisitors.map((website) => (
             <Link key={website.id} href={`/dashboard/${website.id}`}>
-              <Card className="border-0 bg-slate-800">
+              <Card className="">
                 <CardHeader>
-                  <CardTitle className="text-primary-foreground">
-                    {website.domain}
-                  </CardTitle>
+                  <CardTitle>{website.domain}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <PlainChart eventsTimestamps={website.eventsTimestamps} />
                 </CardContent>
                 <CardFooter>
-                  <CardDescription className="text-primary-foreground">
-                    <span className="font-bold">{website.visitors}</span>{" "}
-                    {website.visitors === 1 ? "visitor" : "visitors"} in the
-                    last 24 hours
+                  <CardDescription className="text-foreground/75">
+                    <span className="font-bold text-foreground">
+                      {website.visitors}
+                    </span>{" "}
+                    {website.visitors === 1 ? "visitor" : "visitors"}
                   </CardDescription>
                 </CardFooter>
               </Card>
