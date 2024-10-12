@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 
 import MainChart from "@/components/MainChart";
 
+import Referrers from "@/components/Referrers";
+
 export default async function Dashboard({
   params,
 }: {
@@ -85,7 +87,7 @@ export default async function Dashboard({
     ? totalDuration / sessionDurations.length / 1000
     : 0;
 
-  //! FIX
+  //! FIX: database timestamp is 2 hours behind, should use the user timezone
   const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
   const liveVisitors = new Set(
     events
@@ -93,10 +95,25 @@ export default async function Dashboard({
       .map((event) => event.visitor_id)
   ).size;
 
+  // for the actual website count all referrers, not just the last 24 hours, and group by domain
+  //! This is dummy data
+  const referrers = [
+    {
+      domain: "google.com",
+      count: 100,
+    },
+    {
+      domain: "twitter.com",
+      count: 50,
+    },
+    {
+      domain: "facebook.com",
+      count: 30,
+    },
+  ];
+
   return (
     <div className="container mx-auto">
-      <h1 className="text-primary-foreground">Dashboard</h1>
-      <h2 className="text-primary-foreground">Website: {website.domain}</h2>
       <MainChart
         eventsTimestamps={eventsTimestamps}
         stats={{
@@ -106,6 +123,9 @@ export default async function Dashboard({
           liveVisitors,
         }}
       />
+      <div className="grid grid-cols-1 sm:grid-cols-2 pt-8">
+        <Referrers data={referrers} />
+      </div>
     </div>
   );
 }
