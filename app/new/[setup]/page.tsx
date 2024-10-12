@@ -1,8 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CircleCheck } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, CircleCheck, Copy, Loader2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -23,6 +29,7 @@ import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 
 import { useSearchParams } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 // @ts-expect-error missing types
 import { v4 as uuidv4 } from "uuid";
@@ -32,13 +39,13 @@ const PulseDot = ({ active }: { active: boolean }) => (
     {active && (
       <span
         className={
-          "absolute inline-flex w-full h-full rounded-full opacity-75 bg-slate-500 animate-ping"
+          "absolute inline-flex w-full h-full rounded-full opacity-75 bg-primary animate-ping"
         }
       ></span>
     )}
     <span
       className={`relative inline-flex size-2.5 rounded-full ${
-        active ? "bg-slate-500" : "bg-primary-foreground"
+        active ? "bg-primary" : "bg-foreground/75"
       }`}
     ></span>
   </span>
@@ -52,7 +59,7 @@ const StepIcon = ({
   isCompleted: boolean;
 }) => {
   if (isCompleted) {
-    return <CircleCheck size={16} className="text-primary-foreground" />;
+    return <CircleCheck size={16} className="text-primary" />;
   }
   return <PulseDot active={isActive} />;
 };
@@ -67,6 +74,8 @@ export default function New({ params }: { params: { setup: string } }) {
   );
   const [loading, setLoading] = useState(false);
   const [origin, setOrigin] = useState<string | null>(null);
+
+  const toast = useToast();
 
   useEffect(() => {
     setOrigin(window.location.origin);
@@ -106,62 +115,71 @@ export default function New({ params }: { params: { setup: string } }) {
     const id = uuidv4();
     setId(id);
     setSetupStatus("install");
-    try {
-      const { error } = await supabase.from("websites").insert([
-        {
-          id,
-          user_id: user?.id,
-          domain,
-          timezone,
-          setup_status: "install",
-        },
-      ]);
-      if (error) throw error;
-      setLoading(false);
-    } catch (error) {
-      console.error("Error inserting data:", error);
+    const { error } = await supabase.from("websites").insert([
+      {
+        id,
+        user_id: user?.id,
+        domain,
+        timezone,
+        setup_status: "install",
+      },
+    ]);
+    if (error) {
+      toast.toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
     }
+    setLoading(false);
   };
 
   const handleInstall = async () => {
-    try {
-      const scriptToCheck = `data-website-id="${id}"`;
+    setLoading(true);
+    const scriptToCheck = `data-website-id="${id}"`;
 
-      const response = await fetch("/api/check", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ domain, scriptToCheck }),
+    const response = await fetch("/api/check", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ domain, scriptToCheck }),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      toast.toast({
+        variant: "destructive",
+        title: "Error",
+        description: result.message,
       });
-
-      const result = await response.json();
-
-      if (!result.success) {
-        // toaster error
-        throw new Error(result.message || "Script not found");
-      }
-
-      const { error } = await supabase
-        .from("websites")
-        .update({ setup_status: "done" })
-        .eq("id", id);
-
-      if (error) {
-        console.error("Error updating website:", error);
-        throw error;
-      }
-
-      setSetupStatus("done");
-    } catch (error) {
-      console.error("Error checking installation:", error);
+      setLoading(false);
+      return;
     }
+
+    const { error } = await supabase
+      .from("websites")
+      .update({ setup_status: "done" })
+      .eq("id", id);
+
+    if (error) {
+      toast.toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+      setLoading(false);
+      return;
+    }
+    setSetupStatus("done");
+    setLoading(false);
   };
 
   return (
     <div className="container mx-auto">
       <Link href="/">
-        <Button className="bg-slate-800">
+        <Button variant="secondary">
           <ArrowLeft size={16} className="mr-2" />
           Back
         </Button>
@@ -173,10 +191,8 @@ export default function New({ params }: { params: { setup: string } }) {
             isCompleted={setupStatus !== "add"}
           />
           <span
-            className={`ml-2 ${
-              setupStatus === "add"
-                ? "text-slate-500"
-                : "text-primary-foreground"
+            className={`ml-2 font-bold ${
+              setupStatus === "add" ? "text-primary" : "text-foreground/75"
             }`}
           >
             Add site
@@ -188,10 +204,8 @@ export default function New({ params }: { params: { setup: string } }) {
             isCompleted={setupStatus === "done"}
           />
           <span
-            className={`ml-2 ${
-              setupStatus === "install"
-                ? "text-slate-500"
-                : "text-primary-foreground"
+            className={`ml-2 font-bold ${
+              setupStatus === "install" ? "text-primary" : "text-foreground/75"
             }`}
           >
             Install tracking code
@@ -203,10 +217,8 @@ export default function New({ params }: { params: { setup: string } }) {
             isCompleted={setupStatus === "done"}
           />
           <span
-            className={`ml-2 ${
-              setupStatus === "done"
-                ? "text-slate-500"
-                : "text-primary-foreground"
+            className={`ml-2 font-bold ${
+              setupStatus === "done" ? "text-primary" : "text-foreground/75"
             }`}
           >
             Done
@@ -215,46 +227,45 @@ export default function New({ params }: { params: { setup: string } }) {
       </div>
       {setupStatus === "add" && (
         <div className="pt-8">
-          <Card className="border-0 bg-slate-800">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-primary-foreground">
-                Add a new website
-              </CardTitle>
+              <CardTitle>Add a new website</CardTitle>
+              <CardDescription className="font-bold">
+                Enter your website details
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Label className="text-primary-foreground">Domain</Label>
+              <Label>Domain</Label>
               <Input
                 type="text"
                 placeholder="https://example.com"
-                className="w-full p-2 rounded-lg bg-slate-800 text-primary-foreground border-slate-500/25"
+                className="w-full p-2"
                 onChange={(e) => setDomain(e.target.value)}
               />
-              <Label className="text-primary-foreground mt-4">Timezone</Label>
+              <Label>Timezone</Label>
               <Select
                 onValueChange={(value) => {
                   setTimezone(value);
                 }}
               >
-                <SelectTrigger className="w-full border-slate-500/25 text-primary-foreground">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Timezone" />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-0">
+                <SelectContent>
                   {timezones.map((timezone) => (
-                    <SelectItem
-                      key={timezone}
-                      value={timezone}
-                      className="text-primary-foreground"
-                    >
+                    <SelectItem key={timezone} value={timezone}>
                       {timezone}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <Button
-                className="w-full mt-4 bg-slate-700"
+                disabled={!domain || !timezone || loading}
+                className="w-full mt-4 font-bold"
                 onClick={() => handleAdd()}
               >
-                {loading ? "Loading..." : "Add website"}
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {loading ? "Please wait" : "Add website"}
               </Button>
             </CardContent>
           </Card>
@@ -262,25 +273,59 @@ export default function New({ params }: { params: { setup: string } }) {
       )}
       {setupStatus === "install" && (
         <div className="pt-8">
-          <p className="text-primary-foreground">
-            Install the tracking code on your site
-          </p>
-          <pre className="p-4 mt-4 rounded-lg bg-slate-800 text-primary-foreground">
-            {`<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`}
-          </pre>
-          <Button className="w-full mt-4" onClick={() => handleInstall()}>
-            {loading ? "Loading..." : "Check installation"}
-          </Button>
+          <Card>
+            <CardHeader>
+              <CardTitle>Install the SitePulse script</CardTitle>
+              <CardDescription className="font-bold">
+                Paste this snippet in the <code>&lt;head&gt;</code> of your
+                website
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="relative">
+              <div className="bg-foreground/10 p-4 rounded-md break-all text-sm">
+                <code>
+                  {`<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`}
+                </code>
+              </div>
+              <Button
+                className="absolute top-4 right-10"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`
+                  );
+                }}
+              >
+                <Copy size={16} />
+              </Button>
+              <Button
+                disabled={loading}
+                className="w-full mt-4 font-bold"
+                onClick={() => handleInstall()}
+              >
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {loading ? "Please wait" : "Check installation"}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       )}
       {setupStatus === "done" && (
         <div className="pt-8">
-          <p className="text-primary-foreground">
-            Your website has been successfully added
-          </p>
-          <Link href={`/dashboard/${id}`}>
-            <Button className="w-full mt-4">Go to dashboard</Button>
-          </Link>
+          <Card>
+            <CardHeader>
+              <CardTitle>Setup Complete</CardTitle>
+              <CardDescription className="font-bold">
+                Your website has been successfully added
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href={`/dashboard/${id}`}>
+                <Button className="w-full mt-4 font-bold">
+                  Go to dashboard
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

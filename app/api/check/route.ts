@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { message: "Script not found in any URL combination", success: false },
+      { message: "Script not found", success: false },
       { status: 404 }
     );
   } catch (error) {
