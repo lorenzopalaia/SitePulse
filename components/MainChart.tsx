@@ -17,12 +17,20 @@ interface ChartData {
 
 interface ComponentProps {
   eventsTimestamps: string[];
+  stats: {
+    visitors: number;
+    bounceRate: number;
+    sessionTime: string;
+    liveVisitors: number;
+  };
 }
 
 const generateChartData = (eventsTimestamps: string[]): ChartData[] => {
   const chartData = eventsTimestamps.reduce((acc, timestamp) => {
     const date = new Date(timestamp);
     const timeKey = date.toLocaleTimeString([], {
+      month: "short",
+      day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
     });
@@ -38,37 +46,45 @@ const generateChartData = (eventsTimestamps: string[]): ChartData[] => {
 
 const chartConfig: ChartConfig = {
   events: {
-    label: "Eventi",
+    label: "Events",
     color: "hsl(var(--chart-1))",
   },
 };
 
-export default function Component({ eventsTimestamps }: ComponentProps) {
+export default function Component({ eventsTimestamps, stats }: ComponentProps) {
   const formattedChartData = generateChartData(eventsTimestamps);
+
+  const formatSeconds = (seconds: number) => {
+    const roundedSeconds = Math.round(seconds);
+    const minutes = Math.floor(roundedSeconds / 60);
+    const remainingSeconds = roundedSeconds % 60;
+    if (minutes === 0) {
+      return `${remainingSeconds}s`;
+    }
+    return `${minutes}m ${remainingSeconds}s`;
+  };
 
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="flex gap-4 mb-6">
-          <StatItem title="Visitors" value="1,234" />
+        <div className="flex justify-between gap-4 mb-6">
+          <StatItem title="Visitors" value={stats.visitors.toString()} />
           <Separator orientation="vertical" className="h-12" />
-          <StatItem title="Bounce Rate" value="42%" />
+          <StatItem title="Bounce Rate" value={`${stats.bounceRate}%`} />
           <Separator orientation="vertical" className="h-12" />
-          <StatItem title="Session Time" value="2m 15s" />
+          <StatItem
+            title="Session Time"
+            value={formatSeconds(Number(stats.sessionTime))}
+          />
           <Separator orientation="vertical" className="h-12" />
-          <StatItem title="Live Visitors" value="56" />
+          <StatItem
+            title="Live Visitors"
+            value={stats.liveVisitors.toString()}
+            isLive
+          />
         </div>
         <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={formattedChartData}
-            margin={{
-              left: 40,
-              right: 40,
-              top: 20,
-              bottom: 20,
-            }}
-          >
+          <AreaChart accessibilityLayer data={formattedChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="time"
@@ -106,11 +122,29 @@ export default function Component({ eventsTimestamps }: ComponentProps) {
   );
 }
 
-function StatItem({ title, value }: { title: string; value: string }) {
+const PulseDot = () => (
+  <span className="relative flex items-center justify-center size-4">
+    <span className="absolute inline-flex w-full h-full rounded-full opacity-75 bg-primary animate-ping"></span>
+    <span className="relative inline-flex size-2.5 rounded-full bg-primary"></span>
+  </span>
+);
+
+function StatItem({
+  title,
+  value,
+  isLive,
+}: {
+  title: string;
+  value: string;
+  isLive?: boolean;
+}) {
   return (
-    <div className="flex flex-col items-center">
-      <h3 className="text-sm text-muted-foreground">{title}</h3>
-      <p className="text-2xl font-bold">{value}</p>
+    <div className="flex flex-col">
+      <div className="flex gap-2 items-center">
+        <h3 className="text-sm text-muted-foreground">{title}</h3>
+        {isLive && <PulseDot />}
+      </div>
+      <p className="text-2xl font-extrabold">{value}</p>
     </div>
   );
 }

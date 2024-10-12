@@ -75,7 +75,7 @@ export default async function Home() {
   return (
     <div className="container mx-auto pt-8">
       <div className="flex justify-between items-center">
-        <p className="font-bold text-foreground/75">
+        <p className="font-bold text-muted-foreground">
           You got <span className="text-foreground">{totalVisitors}</span>{" "}
           visitors in the last 24 hours.
         </p>
@@ -98,7 +98,7 @@ export default async function Home() {
                   <PlainChart eventsTimestamps={website.eventsTimestamps} />
                 </CardContent>
                 <CardFooter>
-                  <CardDescription className="text-foreground/75">
+                  <CardDescription className="text-muted-foreground">
                     <span className="font-bold text-foreground">
                       {website.visitors}
                     </span>{" "}

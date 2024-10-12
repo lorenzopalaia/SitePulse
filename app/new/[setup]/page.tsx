@@ -22,13 +22,12 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
 import { useState, useEffect } from "react";
-import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/client";
 
 import { User } from "@supabase/supabase-js";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
 // @ts-expect-error missing types
@@ -45,7 +44,7 @@ const PulseDot = ({ active }: { active: boolean }) => (
     )}
     <span
       className={`relative inline-flex size-2.5 rounded-full ${
-        active ? "bg-primary" : "bg-foreground/75"
+        active ? "bg-primary" : "bg-muted-foreground"
       }`}
     ></span>
   </span>
@@ -74,6 +73,9 @@ export default function New({ params }: { params: { setup: string } }) {
   );
   const [loading, setLoading] = useState(false);
   const [origin, setOrigin] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  const router = useRouter();
 
   const toast = useToast();
 
@@ -83,7 +85,16 @@ export default function New({ params }: { params: { setup: string } }) {
 
   const supabase = createClient();
 
-  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data?.user) {
+        router.push("/login");
+      }
+      setUser(data.user);
+    };
+    getUser();
+  }, [supabase, router]);
 
   useEffect(() => {
     const websiteId = searchParams.get("id");
@@ -91,17 +102,6 @@ export default function New({ params }: { params: { setup: string } }) {
     if (websiteId) setId(websiteId);
     if (websiteDomain) setDomain(websiteDomain);
   }, [searchParams]);
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error || !data?.user) {
-        redirect("/login");
-      }
-      setUser(data.user);
-    };
-    getUser();
-  }, [supabase]);
 
   const timezones = [
     "Europe/Rome",
@@ -192,7 +192,7 @@ export default function New({ params }: { params: { setup: string } }) {
           />
           <span
             className={`ml-2 font-bold ${
-              setupStatus === "add" ? "text-primary" : "text-foreground/75"
+              setupStatus === "add" ? "text-primary" : "text-muted-foreground"
             }`}
           >
             Add site
@@ -205,7 +205,9 @@ export default function New({ params }: { params: { setup: string } }) {
           />
           <span
             className={`ml-2 font-bold ${
-              setupStatus === "install" ? "text-primary" : "text-foreground/75"
+              setupStatus === "install"
+                ? "text-primary"
+                : "text-muted-foreground"
             }`}
           >
             Install tracking code
@@ -218,7 +220,7 @@ export default function New({ params }: { params: { setup: string } }) {
           />
           <span
             className={`ml-2 font-bold ${
-              setupStatus === "done" ? "text-primary" : "text-foreground/75"
+              setupStatus === "done" ? "text-primary" : "text-muted-foreground"
             }`}
           >
             Done
