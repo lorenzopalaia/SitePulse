@@ -68,18 +68,24 @@ export default function Component({ eventsTimestamps, stats }: ComponentProps) {
     <Card>
       <CardContent className="pt-6">
         <div className="flex justify-between gap-4 mb-6">
-          <StatItem title="Visitors" value={stats.visitors.toString()} />
+          <StatItem
+            title="Visitors"
+            value={Math.round(stats.visitors).toString()}
+          />
           <Separator orientation="vertical" className="h-12" />
-          <StatItem title="Bounce Rate" value={`${stats.bounceRate}%`} />
+          <StatItem
+            title="Bounce Rate"
+            value={`${Math.round(stats.bounceRate)}%`}
+          />
           <Separator orientation="vertical" className="h-12" />
           <StatItem
             title="Session Time"
-            value={formatSeconds(Number(stats.sessionTime))}
+            value={formatSeconds(Math.round(Number(stats.sessionTime)))}
           />
           <Separator orientation="vertical" className="h-12" />
           <StatItem
             title="Live Visitors"
-            value={stats.liveVisitors.toString()}
+            value={Math.round(stats.liveVisitors).toString()}
             isLive
           />
         </div>

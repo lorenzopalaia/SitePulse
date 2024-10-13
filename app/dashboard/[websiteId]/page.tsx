@@ -49,9 +49,8 @@ export default async function Dashboard({
 
   const uniqueVisitors = new Set(events.map((event) => event.visitor_id)).size;
 
-  //! FIX
   const sessionEvents = events.reduce((acc, event) => {
-    if (event.type === "pageview") {
+    if (event.event_type === "pageview") {
       acc[event.session_id] = (acc[event.session_id] || 0) + 1;
     }
     return acc;
@@ -95,22 +94,20 @@ export default async function Dashboard({
       .map((event) => event.visitor_id)
   ).size;
 
-  // for the actual website count all referrers, not just the last 24 hours, and group by domain
-  //! This is dummy data
-  const referrers = [
-    {
-      domain: "google.com",
-      count: 100,
-    },
-    {
-      domain: "twitter.com",
-      count: 50,
-    },
-    {
-      domain: "facebook.com",
-      count: 30,
-    },
-  ];
+  let referrers = events
+    .filter((event) => event.referrer)
+    .reduce((acc, event) => {
+      let { hostname } = new URL(event.referrer);
+      if (hostname.startsWith("www.")) {
+        hostname = hostname.slice(4);
+      }
+      acc[hostname] = (acc[hostname] || 0) + 1;
+      return acc;
+    }, {});
+  referrers = Object.entries(referrers).map(([referrer, count]) => ({
+    referrer,
+    count,
+  }));
 
   return (
     <div className="container mx-auto">
