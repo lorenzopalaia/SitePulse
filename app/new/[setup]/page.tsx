@@ -79,6 +79,8 @@ export default function New({ params }: { params: { setup: string } }) {
 
   const toast = useToast();
 
+  const domainRegex = /^(?!www\.)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
   useEffect(() => {
     setOrigin(window.location.origin);
   }, []);
@@ -238,12 +240,17 @@ export default function New({ params }: { params: { setup: string } }) {
             </CardHeader>
             <CardContent>
               <Label>Domain</Label>
-              <Input
-                type="text"
-                placeholder="https://example.com"
-                className="w-full p-2"
-                onChange={(e) => setDomain(e.target.value)}
-              />
+              <div className="flex items-center">
+                <div className="bg-secondary border-2 py-1 px-2 rounded rounded-r-none">
+                  https://
+                </div>
+                <Input
+                  type="text"
+                  placeholder="example.com"
+                  className="w-full p-2 join-item border-l-0 rounded-l-none"
+                  onChange={(e) => setDomain(e.target.value)}
+                />
+              </div>
               <Label>Timezone</Label>
               <Select
                 onValueChange={(value) => {
@@ -262,7 +269,9 @@ export default function New({ params }: { params: { setup: string } }) {
                 </SelectContent>
               </Select>
               <Button
-                disabled={!domain || !timezone || loading}
+                disabled={
+                  !domain || !domainRegex.test(domain) || !timezone || loading
+                }
                 className="w-full mt-4 font-bold"
                 onClick={() => handleAdd()}
               >

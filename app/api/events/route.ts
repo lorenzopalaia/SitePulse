@@ -46,6 +46,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // TODO: unpack a sample request headers and check
     const userAgent = request.headers.get("user-agent");
     const userAgentData = UserAgent.parse(userAgent);
 

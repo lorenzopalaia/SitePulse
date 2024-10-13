@@ -10,7 +10,7 @@ export default function ExternalLinks({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>ExternalLinks</CardTitle>
+        <CardTitle>External Links</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
