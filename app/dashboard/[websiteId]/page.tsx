@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import MainChart from "@/components/MainChart";
 
 import Referrers from "@/components/Referrers";
+import Pages from "@/components/Pages";
+import ExternalLinks from "@/components/ExternalLinks";
 
 export default async function Dashboard({
   params,
@@ -45,7 +47,7 @@ export default async function Dashboard({
     return <div>Error fetching events</div>;
   }
 
-  const eventsTimestamps = events.map((event) => event.timestamp);
+  const timestamps = events.map((event) => event.timestamp);
 
   const uniqueVisitors = new Set(events.map((event) => event.visitor_id)).size;
 
@@ -109,10 +111,35 @@ export default async function Dashboard({
     count,
   }));
 
+  let pages = events
+    .filter((event) => event.href)
+    .reduce((acc, event) => {
+      let { pathname } = new URL(event.href);
+      pathname = pathname.replace(/(https?:\/\/[^/]+)?/, "") || "/"; // Sostituisce stringa vuota con "/"
+      acc[pathname] = (acc[pathname] || 0) + 1;
+      return acc;
+    }, {});
+  pages = Object.entries(pages).map(([page, count]) => ({
+    page: page.replace(/\/$/, "").replace(/\/index$/, "/") || "/", // Sostituisce stringa vuota con "/"
+    count,
+  }));
+
+  let externalLinks = events
+    .filter((event) => event.event_type === "external_link")
+    .reduce((acc, event) => {
+      const hostname = event.extra_data.url;
+      acc[hostname] = (acc[hostname] || 0) + 1;
+      return acc;
+    }, {});
+  externalLinks = Object.entries(externalLinks).map(([link, count]) => ({
+    link,
+    count,
+  }));
+
   return (
     <div className="container mx-auto">
       <MainChart
-        eventsTimestamps={eventsTimestamps}
+        timestamps={timestamps}
         stats={{
           visitors: uniqueVisitors,
           bounceRate,
@@ -120,8 +147,12 @@ export default async function Dashboard({
           liveVisitors,
         }}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 pt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 pt-8 gap-8">
         <Referrers data={referrers} />
+        <Pages data={pages} />
+      </div>
+      <div className="pt-8">
+        <ExternalLinks data={externalLinks} />
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ interface ChartData {
 }
 
 interface ComponentProps {
-  eventsTimestamps: string[];
+  timestamps: string[];
   stats: {
     visitors: number;
     bounceRate: number;
@@ -25,8 +25,8 @@ interface ComponentProps {
   };
 }
 
-const generateChartData = (eventsTimestamps: string[]): ChartData[] => {
-  const chartData = eventsTimestamps.reduce((acc, timestamp) => {
+const generateChartData = (timestamps: string[]): ChartData[] => {
+  const chartData = timestamps.reduce((acc, timestamp) => {
     const date = new Date(timestamp);
     const timeKey = date.toLocaleTimeString([], {
       month: "short",
@@ -51,8 +51,8 @@ const chartConfig: ChartConfig = {
   },
 };
 
-export default function Component({ eventsTimestamps, stats }: ComponentProps) {
-  const formattedChartData = generateChartData(eventsTimestamps);
+export default function MainChart({ timestamps, stats }: ComponentProps) {
+  const formattedChartData = generateChartData(timestamps);
 
   const formatSeconds = (seconds: number) => {
     const roundedSeconds = Math.round(seconds);

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
+// @ts-expect-error missing types
+import UserAgent from "user-agent";
+
 export async function OPTIONS() {
   const response = NextResponse.json(
     { message: "Preflight request successful" },
@@ -43,7 +46,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Salva l'evento nel database
+    const userAgent = request.headers.get("user-agent");
+    const userAgentData = UserAgent.parse(userAgent);
+
     const { error } = await supabase.from("events").insert([
       {
         website_id: websiteId,
@@ -53,7 +58,12 @@ export async function POST(request: Request) {
         href,
         referrer,
         event_type: type,
-        extra_data: extraData,
+        extra_data: {
+          ...extraData,
+          browser: userAgentData.browser,
+          os: userAgentData.os,
+          device: userAgentData.device,
+        },
         timestamp,
       },
     ]);
