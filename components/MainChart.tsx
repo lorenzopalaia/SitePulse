@@ -19,6 +19,7 @@ interface ComponentProps {
   timestamps: string[];
   stats: {
     visitors: number;
+    events: number;
     bounceRate: number;
     sessionTime: string;
     liveVisitors: number;
@@ -64,67 +65,82 @@ export default function MainChart({ timestamps, stats }: ComponentProps) {
     return `${minutes}m ${remainingSeconds}s`;
   };
 
+  const formattedStats = [
+    {
+      title: "Visitors",
+      value: stats.visitors.toString(),
+    },
+    {
+      title: "Events",
+      value: stats.events.toString(),
+    },
+    {
+      title: "Bounce Rate",
+      value: `${Math.round(stats.bounceRate)}%`,
+    },
+    {
+      title: "Session Time",
+      value: formatSeconds(Math.round(Number(stats.sessionTime))),
+    },
+    {
+      title: "Live Visitors",
+      value: stats.liveVisitors.toString(),
+
+      isLive: true,
+    },
+  ];
+
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex justify-between gap-4 mb-6">
-          <StatItem
-            title="Visitors"
-            value={Math.round(stats.visitors).toString()}
-          />
-          <Separator orientation="vertical" className="h-12" />
-          <StatItem
-            title="Bounce Rate"
-            value={`${Math.round(stats.bounceRate)}%`}
-          />
-          <Separator orientation="vertical" className="h-12" />
-          <StatItem
-            title="Session Time"
-            value={formatSeconds(Math.round(Number(stats.sessionTime)))}
-          />
-          <Separator orientation="vertical" className="h-12" />
-          <StatItem
-            title="Live Visitors"
-            value={Math.round(stats.liveVisitors).toString()}
-            isLive
-          />
-        </div>
-        <ChartContainer config={chartConfig}>
-          <AreaChart accessibilityLayer data={formattedChartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="time"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <defs>
-              <linearGradient id="fillEvents" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-events)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-events)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-            </defs>
-            <Area
-              dataKey="events"
-              type="monotone"
-              fill="url(#fillEvents)"
-              fillOpacity={0.4}
-              stroke="var(--color-events)"
-            />
-          </AreaChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+    <div className="pt-12">
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex justify-between gap-4 mb-6 px-4">
+            {formattedStats.map(({ title, value, isLive }, index) => (
+              <div key={title} className={index !== 0 ? "flex gap-4" : ""}>
+                {index !== 0 && (
+                  <Separator orientation="vertical" className="h-12" />
+                )}
+                <StatItem title={title} value={value} isLive={isLive} />
+              </div>
+            ))}
+          </div>
+          <ChartContainer config={chartConfig} className="h-96 w-full">
+            <AreaChart accessibilityLayer data={formattedChartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="time"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <defs>
+                <linearGradient id="fillEvents" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="var(--color-events)"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="var(--color-events)"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+              </defs>
+              <Area
+                dataKey="events"
+                type="monotone"
+                fill="url(#fillEvents)"
+                fillOpacity={0.4}
+                stroke="var(--color-events)"
+              />
+            </AreaChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 

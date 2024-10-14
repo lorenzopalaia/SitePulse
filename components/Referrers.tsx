@@ -7,6 +7,8 @@ export default function Referrers({
 }: {
   data: { referrer: string; count: number }[];
 }) {
+  const referrers = data.sort((a, b) => b.count - a.count);
+
   return (
     <Card>
       <CardHeader>
@@ -14,7 +16,7 @@ export default function Referrers({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          {data.map(({ referrer, count }) => (
+          {referrers.map(({ referrer, count }) => (
             <div className="flex justify-between items-center" key={referrer}>
               <div className="flex gap-2 items-center">
                 <Image

@@ -5,6 +5,8 @@ export default function Pages({
 }: {
   data: { page: string; count: number }[];
 }) {
+  const pages = data.sort((a, b) => b.count - a.count);
+
   return (
     <Card>
       <CardHeader>
@@ -12,7 +14,7 @@ export default function Pages({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          {data.map(({ page, count }) => (
+          {pages.map(({ page, count }) => (
             <div className="flex justify-between items-center" key={page}>
               <p className="text-muted-foreground">{page}</p>
               <p className="font-bold">{count}</p>

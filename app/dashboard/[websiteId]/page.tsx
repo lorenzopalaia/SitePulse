@@ -7,6 +7,7 @@ import MainChart from "@/components/MainChart";
 import Referrers from "@/components/Referrers";
 import Pages from "@/components/Pages";
 import ExternalLinks from "@/components/ExternalLinks";
+import InternalLinks from "@/components/InternalLinks";
 
 export default async function Dashboard({
   params,
@@ -47,9 +48,28 @@ export default async function Dashboard({
     return <div>Error fetching events</div>;
   }
 
-  const timestamps = events.map((event) => event.timestamp);
+  const eventsTimestamps = events.map((event) => event.timestamp);
 
-  const uniqueVisitors = new Set(events.map((event) => event.visitor_id)).size;
+  const uniqueVisitors = new Set(events.map((event) => event.visitor_id));
+
+  // TODO: implement two lines in the chart then uncomment this
+  /*
+  const uniqueVisitorsTimestamps = Array.from(uniqueVisitors).map((visitor) => {
+    const visitorEvents = events.filter(
+      (event) => event.visitor_id === visitor
+    );
+    const mostRecentEvent = visitorEvents.reduce(
+      (acc, event) => {
+        if (new Date(event.timestamp) > new Date(acc.timestamp)) {
+          return event;
+        }
+        return acc;
+      },
+      { timestamp: "0" }
+    );
+    return mostRecentEvent.timestamp;
+  });
+  */
 
   const sessionEvents = events.reduce((acc, event) => {
     if (event.event_type === "pageview") {
@@ -136,12 +156,26 @@ export default async function Dashboard({
     count,
   }));
 
+  let internalLinks = events
+    .filter((event) => event.event_type === "internal_link")
+    .reduce((acc, event) => {
+      const { pathname, hash } = new URL(event.extra_data.url);
+      const url = pathname + hash;
+      acc[url] = (acc[url] || 0) + 1;
+      return acc;
+    }, {});
+  internalLinks = Object.entries(internalLinks).map(([link, count]) => ({
+    link,
+    count,
+  }));
+
   return (
     <div className="container mx-auto">
       <MainChart
-        timestamps={timestamps}
+        timestamps={eventsTimestamps}
         stats={{
-          visitors: uniqueVisitors,
+          visitors: uniqueVisitors.size,
+          events: events.length,
           bounceRate,
           sessionTime: averageDuration.toString(),
           liveVisitors,
@@ -150,9 +184,8 @@ export default async function Dashboard({
       <div className="grid grid-cols-1 sm:grid-cols-2 pt-8 gap-8">
         <Referrers data={referrers} />
         <Pages data={pages} />
-      </div>
-      <div className="pt-8">
         <ExternalLinks data={externalLinks} />
+        <InternalLinks data={internalLinks} />
       </div>
     </div>
   );
