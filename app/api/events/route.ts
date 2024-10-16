@@ -29,17 +29,9 @@ export async function POST(request: Request) {
       referrer,
       type,
       extraData,
-      timestamp,
     } = body;
 
-    if (
-      !websiteId ||
-      !visitorId ||
-      !sessionId ||
-      !domain ||
-      !type ||
-      !timestamp
-    ) {
+    if (!websiteId || !visitorId || !sessionId || !domain || !type) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -65,7 +57,6 @@ export async function POST(request: Request) {
           os: userAgentData.os,
           device: userAgentData.device,
         },
-        timestamp,
       },
     ]);
 

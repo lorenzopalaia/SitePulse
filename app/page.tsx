@@ -53,12 +53,12 @@ export default async function Home() {
       websiteEvents
         .filter(
           (event) =>
-            new Date(event.timestamp).getTime() >
+            new Date(event.created_at).getTime() >
             Date.now() - 24 * 60 * 60 * 1000
         )
         .map((event) => event.visitor_id)
     ).size;
-    const eventsTimestamps = websiteEvents.map((event) => event.timestamp);
+    const eventsTimestamps = websiteEvents.map((event) => event.created_at);
     return {
       ...website,
       visitors: uniqueVisitors,

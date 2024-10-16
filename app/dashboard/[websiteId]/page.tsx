@@ -48,7 +48,7 @@ export default async function Dashboard({
     return <div>Error fetching events</div>;
   }
 
-  const eventsTimestamps = events.map((event) => event.timestamp);
+  const eventsTimestamps = events.map((event) => event.created_at);
 
   const uniqueVisitors = new Set(events.map((event) => event.visitor_id));
 
@@ -60,14 +60,14 @@ export default async function Dashboard({
     );
     const mostRecentEvent = visitorEvents.reduce(
       (acc, event) => {
-        if (new Date(event.timestamp) > new Date(acc.timestamp)) {
+        if (new Date(event.created_at) > new Date(acc.created_at)) {
           return event;
         }
         return acc;
       },
       { timestamp: "0" }
     );
-    return mostRecentEvent.timestamp;
+    return mostRecentEvent.created_at;
   });
   */
 
@@ -87,11 +87,11 @@ export default async function Dashboard({
     (acc: Record<string, { start: number; end: number }>, event) => {
       if (!acc[event.session_id]) {
         acc[event.session_id] = {
-          start: new Date(event.timestamp).getTime(),
-          end: new Date(event.timestamp).getTime(),
+          start: new Date(event.created_at).getTime(),
+          end: new Date(event.created_at).getTime(),
         };
       } else {
-        acc[event.session_id].end = new Date(event.timestamp).getTime();
+        acc[event.session_id].end = new Date(event.created_at).getTime();
       }
       return acc;
     },
@@ -113,7 +113,7 @@ export default async function Dashboard({
   const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
   const liveVisitors = new Set(
     events
-      .filter((event) => new Date(event.timestamp).getTime() >= fiveMinutesAgo)
+      .filter((event) => new Date(event.created_at).getTime() >= fiveMinutesAgo)
       .map((event) => event.visitor_id)
   ).size;
 

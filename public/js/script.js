@@ -38,7 +38,6 @@
       domain,
       href: window.location.href || null,
       referrer: document.referrer || null,
-      timestamp: new Date().toISOString(),
     };
 
     const visitorId = getOrCreateVisitorId();
