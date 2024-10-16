@@ -48,6 +48,16 @@ export default async function Dashboard({
     return <div>Error fetching events</div>;
   }
 
+  //* Convert UTC timestamps to local time
+  events.forEach((event) => {
+    const utcDate = new Date(event.created_at);
+    const localOffsetInMinutes = utcDate.getTimezoneOffset();
+    const localTime = new Date(
+      utcDate.getTime() - localOffsetInMinutes * 60000
+    );
+    event.created_at = localTime.toISOString();
+  });
+
   const eventsTimestamps = events.map((event) => event.created_at);
 
   const uniqueVisitors = new Set(events.map((event) => event.visitor_id));
