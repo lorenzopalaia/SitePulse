@@ -109,6 +109,7 @@ export default async function Dashboard({
     : 0;
 
   //! FIX: database timestamp is 2 hours behind, should use the user timezone
+  //* Now seems to be working fine, but investigate further
   const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
   const liveVisitors = new Set(
     events

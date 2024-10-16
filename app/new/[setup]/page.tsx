@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CircleCheck, Copy, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -9,15 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+import { ArrowLeft, CircleCheck, Copy, Loader2 } from "lucide-react";
 
 import Link from "next/link";
 
@@ -67,7 +61,6 @@ export default function New({ params }: { params: { setup: string } }) {
   const searchParams = useSearchParams();
   const [domain, setDomain] = useState<string | null>(null);
   const [id, setId] = useState<string | null>(null);
-  const [timezone, setTimezone] = useState<string | null>(null);
   const [setupStatus, setSetupStatus] = useState<"add" | "install" | "done">(
     params.setup as "add" | "install" | "done"
   );
@@ -105,13 +98,6 @@ export default function New({ params }: { params: { setup: string } }) {
     if (websiteDomain) setDomain(websiteDomain);
   }, [searchParams]);
 
-  const timezones = [
-    "Europe/Rome",
-    "Europe/London",
-    "America/New York",
-    "America/Los Angeles",
-  ];
-
   const handleAdd = async () => {
     setLoading(true);
     const id = uuidv4();
@@ -122,7 +108,6 @@ export default function New({ params }: { params: { setup: string } }) {
         id,
         user_id: user?.id,
         domain,
-        timezone,
         setup_status: "install",
       },
     ]);
@@ -251,27 +236,8 @@ export default function New({ params }: { params: { setup: string } }) {
                   onChange={(e) => setDomain(e.target.value)}
                 />
               </div>
-              <Label>Timezone</Label>
-              <Select
-                onValueChange={(value) => {
-                  setTimezone(value);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Timezone" />
-                </SelectTrigger>
-                <SelectContent>
-                  {timezones.map((timezone) => (
-                    <SelectItem key={timezone} value={timezone}>
-                      {timezone}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
               <Button
-                disabled={
-                  !domain || !domainRegex.test(domain) || !timezone || loading
-                }
+                disabled={!domain || !domainRegex.test(domain) || loading}
                 className="w-full mt-4 font-bold"
                 onClick={() => handleAdd()}
               >
