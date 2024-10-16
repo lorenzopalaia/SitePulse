@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Referrers({
   data,
@@ -19,14 +19,11 @@ export default function Referrers({
           {referrers.map(({ referrer, count }) => (
             <div className="flex justify-between items-center" key={referrer}>
               <div className="flex gap-2 items-center">
-                <Image
-                  src={`https://www.${referrer}/favicon.ico`}
-                  alt="Page icon"
-                  width={24}
-                  height={24}
-                  className="rounded-full size-6"
-                />
-                <p className="text-muted-foreground">{referrer}</p>
+                <Avatar className="size-6">
+                  <AvatarFallback>{referrer[0]}</AvatarFallback>
+                  <AvatarImage src={`https://www.${referrer}/favicon.ico`} />
+                </Avatar>
+                <p className="text-muted-foreground break-all">{referrer}</p>
               </div>
               <p className="font-bold">{count}</p>
             </div>

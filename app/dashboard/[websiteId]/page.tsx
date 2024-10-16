@@ -32,7 +32,7 @@ export default async function Dashboard({
     return <div>Error fetching website</div>;
   }
 
-  // Controllo dello stato di setup dal database
+  //* Redirect to setup pages if website is not fully set up
   if (website.setup_status === "add") {
     redirect("/new/add");
   } else if (website.setup_status === "install") {
@@ -57,6 +57,9 @@ export default async function Dashboard({
     );
     event.created_at = localTime.toISOString();
   });
+
+  //! Latest timestamps are not showed in the chart, maybe because of the timezone conversion
+  //! Need to investigate further
 
   const eventsTimestamps = events.map((event) => event.created_at);
 
@@ -118,8 +121,6 @@ export default async function Dashboard({
     ? totalDuration / sessionDurations.length / 1000
     : 0;
 
-  //! FIX: database timestamp is 2 hours behind, should use the user timezone
-  //* Now seems to be working fine, but investigate further
   const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
   const liveVisitors = new Set(
     events
@@ -192,7 +193,7 @@ export default async function Dashboard({
           liveVisitors,
         }}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 pt-8 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 pt-8 gap-8">
         <Referrers data={referrers} />
         <Pages data={pages} />
         <ExternalLinks data={externalLinks} />

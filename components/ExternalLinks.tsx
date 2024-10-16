@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ExternalLinks({
   data,
@@ -19,14 +18,11 @@ export default function ExternalLinks({
           {links.map(({ link, count }) => (
             <div className="flex justify-between items-center" key={link}>
               <div className="flex gap-2 items-center">
-                <Image
-                  src={`${new URL(link).origin}/favicon.ico`}
-                  alt="Page icon"
-                  width={24}
-                  height={24}
-                  className="rounded-full size-6"
-                />
-                <p className="text-muted-foreground">{link}</p>
+                <Avatar className="size-6">
+                  <AvatarFallback>{new URL(link).hostname[0]}</AvatarFallback>
+                  <AvatarImage src={`${new URL(link).origin}/favicon.ico`} />
+                </Avatar>
+                <p className="text-muted-foreground break-all">{link}</p>
               </div>
               <p className="font-bold">{count}</p>
             </div>
