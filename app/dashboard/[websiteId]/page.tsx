@@ -8,6 +8,7 @@ import Referrers from "@/components/Referrers";
 import Pages from "@/components/Pages";
 import ExternalLinks from "@/components/ExternalLinks";
 import InternalLinks from "@/components/InternalLinks";
+import EventsList from "@/components/EventsList";
 
 export default async function Dashboard({
   params,
@@ -182,7 +183,7 @@ export default async function Dashboard({
   }));
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto py-12">
       <MainChart
         timestamps={eventsTimestamps}
         stats={{
@@ -198,6 +199,9 @@ export default async function Dashboard({
         <Pages data={pages} />
         <ExternalLinks data={externalLinks} />
         <InternalLinks data={internalLinks} />
+      </div>
+      <div className="pt-8">
+        <EventsList data={events} />
       </div>
     </div>
   );
