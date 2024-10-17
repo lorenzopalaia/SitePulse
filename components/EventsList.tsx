@@ -30,6 +30,9 @@ export default function Events({
     created_at: string;
   }[];
 }) {
+  //! Time depends on the server timezone
+  //! Chart is showing the data in the correct timezone
+  //! But the events are shown in the server timezone
   const events = data
     .sort(
       (a, b) =>

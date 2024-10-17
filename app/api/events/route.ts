@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { headers } from "next/headers";
 
 // @ts-expect-error missing types
 import UserAgent from "user-agent";
@@ -38,9 +39,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // TODO: unpack a sample request headers and check
     const userAgent = request.headers.get("user-agent");
     const userAgentData = UserAgent.parse(userAgent);
+
+    const headersList = headers();
+    const ip = headersList.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
+    const country = headersList.get("x-vercel-ip-country") || null;
+    const city = headersList.get("x-vercel-ip-city") || null;
+    const region = headersList.get("x-vercel-ip-country-region") || null;
 
     const { error } = await supabase.from("events").insert([
       {
@@ -56,6 +62,10 @@ export async function POST(request: Request) {
           browser: userAgentData.browser,
           os: userAgentData.os,
           device: userAgentData.device,
+          ip,
+          country,
+          city,
+          region,
         },
       },
     ]);
