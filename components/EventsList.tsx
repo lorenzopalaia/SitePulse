@@ -1,18 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// {
-//   id: '7ea155ce-61f9-4da3-b373-205d8636bc98',
-//   website_id: '4d510912-52dc-45a9-ada5-a166e260e315',
-//   visitor_id: '8978fda9-2510-4bfe-867f-630cb147b0eb',
-//   session_id: 'de6641e2-80be-4f83-9947-56d6ba7dd707',
-//   domain: 'lorenzopalaia.it',
-//   href: 'https://www.lorenzopalaia.it/experience',
-//   referrer: 'https://www.lorenzopalaia.it/',
-//   event_type: 'pageview',
-//   extra_data: null or object,
-//   created_at: '2024-10-11T16:17:38.768Z'
-// }
+import { getCountryFlag } from "@/utils/countryUtils";
 
 export default function Events({
   data,
@@ -26,7 +15,7 @@ export default function Events({
     href: string;
     referrer: string;
     event_type: string;
-    extra_data: { url: string };
+    extra_data: { url: string; country: string };
     created_at: string;
   }[];
 }) {
@@ -61,6 +50,7 @@ export default function Events({
               <span className="text-muted-foreground">
                 [{event.created_at}]
               </span>{" "}
+              {getCountryFlag(event.extra_data?.country)}{" "}
               <span className="font-bold">{event.event_type}</span>
               {event.event_type === "pageview" && (
                 <span className="italic">
