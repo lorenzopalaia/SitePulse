@@ -80,60 +80,62 @@ export default function LoginPage() {
 
   return (
     <div className="container mx-auto">
-      <Form {...form}>
-        <form className="space-y-8">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold">Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="example@gmail.com" {...field} />
-                </FormControl>
-                <FormDescription>
-                  We&apos;ll never share your email.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold">Password</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Must be at least 8 characters.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex space-x-4">
-            <Button
-              type="button"
-              onClick={form.handleSubmit((values) =>
-                handleSubmit(values, "login")
+      <div className="mx-8">
+        <Form {...form}>
+          <form className="space-y-8">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-bold">Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="example@gmail.com" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    We&apos;ll never share your email.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
               )}
-            >
-              Log in
-            </Button>
-            <Button
-              type="button"
-              onClick={form.handleSubmit((values) =>
-                handleSubmit(values, "signup")
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-bold">Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Must be at least 8 characters.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
               )}
-            >
-              Sign up
-            </Button>
-          </div>
-        </form>
-      </Form>
+            />
+            <div className="flex space-x-4">
+              <Button
+                type="button"
+                onClick={form.handleSubmit((values) =>
+                  handleSubmit(values, "login")
+                )}
+              >
+                Log in
+              </Button>
+              <Button
+                type="button"
+                onClick={form.handleSubmit((values) =>
+                  handleSubmit(values, "signup")
+                )}
+              >
+                Sign up
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }

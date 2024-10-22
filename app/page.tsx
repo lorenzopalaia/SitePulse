@@ -74,40 +74,42 @@ export default async function Home() {
 
   return (
     <div className="container mx-auto pt-8">
-      <div className="flex justify-between items-center">
-        <p className="font-bold text-muted-foreground">
-          You got <span className="text-foreground">{totalVisitors}</span>{" "}
-          visitors in the last 24 hours.
-        </p>
-        <Link href="/new/add">
-          <Button variant="secondary" className="font-bold">
-            <Plus size={16} className="mr-2" />
-            Website
-          </Button>
-        </Link>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
-        {websitesWithVisitors &&
-          websitesWithVisitors.map((website) => (
-            <Link key={website.id} href={`/dashboard/${website.id}`}>
-              <Card className="">
-                <CardHeader>
-                  <CardTitle>{website.domain}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <PlainChart eventsTimestamps={website.eventsTimestamps} />
-                </CardContent>
-                <CardFooter>
-                  <CardDescription className="text-muted-foreground">
-                    <span className="font-bold text-foreground">
-                      {website.visitors}
-                    </span>{" "}
-                    {website.visitors === 1 ? "visitor" : "visitors"}
-                  </CardDescription>
-                </CardFooter>
-              </Card>
-            </Link>
-          ))}
+      <div className="mx-8">
+        <div className="flex justify-between items-center gap-2">
+          <p className="font-bold text-muted-foreground">
+            You got <span className="text-foreground">{totalVisitors}</span>{" "}
+            visitors in the last 24 hours.
+          </p>
+          <Link href="/new/add">
+            <Button variant="secondary" className="font-bold">
+              <Plus size={16} className="mr-2" />
+              Website
+            </Button>
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
+          {websitesWithVisitors &&
+            websitesWithVisitors.map((website) => (
+              <Link key={website.id} href={`/dashboard/${website.id}`}>
+                <Card className="">
+                  <CardHeader>
+                    <CardTitle>{website.domain}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <PlainChart eventsTimestamps={website.eventsTimestamps} />
+                  </CardContent>
+                  <CardFooter>
+                    <CardDescription className="text-muted-foreground">
+                      <span className="font-bold text-foreground">
+                        {website.visitors}
+                      </span>{" "}
+                      {website.visitors === 1 ? "visitor" : "visitors"}
+                    </CardDescription>
+                  </CardFooter>
+                </Card>
+              </Link>
+            ))}
+        </div>
       </div>
     </div>
   );

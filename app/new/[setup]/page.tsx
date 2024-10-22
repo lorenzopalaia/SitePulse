@@ -165,146 +165,150 @@ export default function New({ params }: { params: { setup: string } }) {
 
   return (
     <div className="container mx-auto">
-      <Link href="/">
-        <Button variant="secondary">
-          <ArrowLeft size={16} className="mr-2" />
-          Back
-        </Button>
-      </Link>
-      <div className="flex gap-8 pt-8">
-        <div className="flex items-center">
-          <StepIcon
-            isActive={setupStatus === "add"}
-            isCompleted={setupStatus !== "add"}
-          />
-          <span
-            className={`ml-2 font-bold ${
-              setupStatus === "add" ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            Add site
-          </span>
+      <div className="mx-8">
+        <Link href="/">
+          <Button variant="secondary">
+            <ArrowLeft size={16} className="mr-2" />
+            Back
+          </Button>
+        </Link>
+        <div className="flex gap-8 pt-8">
+          <div className="flex items-center">
+            <StepIcon
+              isActive={setupStatus === "add"}
+              isCompleted={setupStatus !== "add"}
+            />
+            <span
+              className={`ml-2 font-bold ${
+                setupStatus === "add" ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              Add site
+            </span>
+          </div>
+          <div className="flex items-center">
+            <StepIcon
+              isActive={setupStatus === "install"}
+              isCompleted={setupStatus === "done"}
+            />
+            <span
+              className={`ml-2 font-bold ${
+                setupStatus === "install"
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              }`}
+            >
+              Install tracking code
+            </span>
+          </div>
+          <div className="flex items-center">
+            <StepIcon
+              isActive={setupStatus === "done"}
+              isCompleted={setupStatus === "done"}
+            />
+            <span
+              className={`ml-2 font-bold ${
+                setupStatus === "done"
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              }`}
+            >
+              Done
+            </span>
+          </div>
         </div>
-        <div className="flex items-center">
-          <StepIcon
-            isActive={setupStatus === "install"}
-            isCompleted={setupStatus === "done"}
-          />
-          <span
-            className={`ml-2 font-bold ${
-              setupStatus === "install"
-                ? "text-primary"
-                : "text-muted-foreground"
-            }`}
-          >
-            Install tracking code
-          </span>
-        </div>
-        <div className="flex items-center">
-          <StepIcon
-            isActive={setupStatus === "done"}
-            isCompleted={setupStatus === "done"}
-          />
-          <span
-            className={`ml-2 font-bold ${
-              setupStatus === "done" ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            Done
-          </span>
-        </div>
-      </div>
-      {setupStatus === "add" && (
-        <div className="pt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Add a new website</CardTitle>
-              <CardDescription className="font-bold">
-                Enter your website details
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Label>Domain</Label>
-              <div className="flex items-center">
-                <div className="bg-secondary border-2 py-1 px-2 rounded rounded-r-none">
-                  https://
+        {setupStatus === "add" && (
+          <div className="pt-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Add a new website</CardTitle>
+                <CardDescription className="font-bold">
+                  Enter your website details
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Label>Domain</Label>
+                <div className="flex items-center">
+                  <div className="bg-secondary border-2 py-1 px-2 rounded rounded-r-none">
+                    https://
+                  </div>
+                  <Input
+                    type="text"
+                    placeholder="example.com"
+                    className="w-full p-2 join-item border-l-0 rounded-l-none"
+                    onChange={(e) => setDomain(e.target.value)}
+                  />
                 </div>
-                <Input
-                  type="text"
-                  placeholder="example.com"
-                  className="w-full p-2 join-item border-l-0 rounded-l-none"
-                  onChange={(e) => setDomain(e.target.value)}
-                />
-              </div>
-              <Button
-                disabled={!domain || !domainRegex.test(domain) || loading}
-                className="w-full mt-4 font-bold"
-                onClick={() => handleAdd()}
-              >
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {loading ? "Please wait" : "Add website"}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-      {setupStatus === "install" && (
-        <div className="pt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Install the SitePulse script</CardTitle>
-              <CardDescription className="font-bold">
-                Paste this snippet in the <code>&lt;head&gt;</code> of your
-                website
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="relative">
-              <div className="bg-foreground/10 p-4 rounded-md break-all text-sm">
-                <code>
-                  {`<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`}
-                </code>
-              </div>
-              <Button
-                className="absolute top-4 right-10"
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`
-                  );
-                }}
-              >
-                <Copy size={16} />
-              </Button>
-              <Button
-                disabled={loading}
-                className="w-full mt-4 font-bold"
-                onClick={() => handleInstall()}
-              >
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {loading ? "Please wait" : "Check installation"}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-      {setupStatus === "done" && (
-        <div className="pt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Setup Complete</CardTitle>
-              <CardDescription className="font-bold">
-                Your website has been successfully added
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href={`/dashboard/${id}`}>
-                <Button className="w-full mt-4 font-bold">
-                  Go to dashboard
+                <Button
+                  disabled={!domain || !domainRegex.test(domain) || loading}
+                  className="w-full mt-4 font-bold"
+                  onClick={() => handleAdd()}
+                >
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading ? "Please wait" : "Add website"}
                 </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        {setupStatus === "install" && (
+          <div className="pt-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Install the SitePulse script</CardTitle>
+                <CardDescription className="font-bold">
+                  Paste this snippet in the <code>&lt;head&gt;</code> of your
+                  website
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="relative">
+                <div className="bg-foreground/10 p-4 rounded-md break-all text-sm">
+                  <code>
+                    {`<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`}
+                  </code>
+                </div>
+                <Button
+                  className="absolute top-4 right-10"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`
+                    );
+                  }}
+                >
+                  <Copy size={16} />
+                </Button>
+                <Button
+                  disabled={loading}
+                  className="w-full mt-4 font-bold"
+                  onClick={() => handleInstall()}
+                >
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading ? "Please wait" : "Check installation"}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        {setupStatus === "done" && (
+          <div className="pt-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Setup Complete</CardTitle>
+                <CardDescription className="font-bold">
+                  Your website has been successfully added
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href={`/dashboard/${id}`}>
+                  <Button className="w-full mt-4 font-bold">
+                    Go to dashboard
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

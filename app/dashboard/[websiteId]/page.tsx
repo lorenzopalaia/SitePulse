@@ -184,24 +184,26 @@ export default async function Dashboard({
 
   return (
     <div className="container mx-auto py-12">
-      <MainChart
-        timestamps={eventsTimestamps}
-        stats={{
-          visitors: uniqueVisitors.size,
-          events: events.length,
-          bounceRate,
-          sessionTime: averageDuration.toString(),
-          liveVisitors,
-        }}
-      />
-      <div className="grid grid-cols-1 lg:grid-cols-2 pt-8 gap-8">
-        <Referrers data={referrers} />
-        <Pages data={pages} />
-        <ExternalLinks data={externalLinks} />
-        <InternalLinks data={internalLinks} />
-      </div>
-      <div className="pt-8">
-        <EventsList data={events} />
+      <div className="mx-8">
+        <MainChart
+          timestamps={eventsTimestamps}
+          stats={{
+            visitors: uniqueVisitors.size,
+            events: events.length,
+            bounceRate,
+            sessionTime: averageDuration.toString(),
+            liveVisitors,
+          }}
+        />
+        <div className="grid grid-cols-1 lg:grid-cols-2 pt-8 gap-8">
+          <Referrers data={referrers} />
+          <Pages data={pages} />
+          <ExternalLinks data={externalLinks} />
+          <InternalLinks data={internalLinks} />
+        </div>
+        <div className="pt-8">
+          <EventsList data={events} />
+        </div>
       </div>
     </div>
   );

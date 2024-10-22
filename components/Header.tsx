@@ -71,26 +71,31 @@ export default function Header() {
   return (
     <header className="py-4">
       <div className="container mx-auto">
-        <div className="flex justify-between">
-          <Link className="flex items-center gap-2 text-xl font-bold" href="/">
-            <Logo />
-            <div>SitePulse</div>
-          </Link>
-          <div className="flex gap-4">
-            {user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="rounded-md font-semibold text-md border">
-                  <span className="p-4">{user?.email?.split("@")[0]}</span>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout}>
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-            <ThemeToggle />
+        <div className="mx-8">
+          <div className="flex justify-between">
+            <Link
+              className="flex items-center gap-2 text-xl font-bold"
+              href="/"
+            >
+              <Logo />
+              <div>SitePulse</div>
+            </Link>
+            <div className="flex gap-4">
+              {user && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="rounded-md font-semibold text-md border">
+                    <span className="p-4">{user?.email?.split("@")[0]}</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>
