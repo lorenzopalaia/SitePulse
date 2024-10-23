@@ -73,9 +73,9 @@ export default async function Home() {
   );
 
   return (
-    <div className="container mx-auto pt-8">
+    <div className="container pt-8 mx-auto">
       <div className="mx-8">
-        <div className="flex justify-between items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
           <p className="font-bold text-muted-foreground">
             You got <span className="text-foreground">{totalVisitors}</span>{" "}
             visitors in the last 24 hours.
@@ -87,7 +87,7 @@ export default async function Home() {
             </Button>
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
+        <div className="grid grid-cols-1 gap-8 pt-8 sm:grid-cols-2 lg:grid-cols-3">
           {websitesWithVisitors &&
             websitesWithVisitors.map((website) => (
               <Link key={website.id} href={`/dashboard/${website.id}`}>

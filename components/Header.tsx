@@ -100,7 +100,7 @@ export default function Header() {
             <div className="flex gap-4">
               {user && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="rounded-md font-semibold text-md border">
+                  <DropdownMenuTrigger className="font-semibold border rounded-md text-md">
                     <span className="p-4">{user?.email?.split("@")[0]}</span>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>

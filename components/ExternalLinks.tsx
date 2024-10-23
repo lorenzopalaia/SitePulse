@@ -16,13 +16,13 @@ export default function ExternalLinks({
       <CardContent>
         <div className="flex flex-col gap-4">
           {links.map(({ link, count }) => (
-            <div className="flex justify-between items-center" key={link}>
-              <div className="flex gap-2 items-center">
+            <div className="flex items-center justify-between" key={link}>
+              <div className="flex items-center gap-2">
                 <Avatar className="size-6">
                   <AvatarFallback>{new URL(link).hostname[0]}</AvatarFallback>
                   <AvatarImage src={`${new URL(link).origin}/favicon.ico`} />
                 </Avatar>
-                <p className="text-muted-foreground break-all">{link}</p>
+                <p className="break-all text-muted-foreground">{link}</p>
               </div>
               <p className="font-bold">{count}</p>
             </div>

@@ -15,7 +15,7 @@ export default function InternalLinks({
       <CardContent>
         <div className="flex flex-col gap-4">
           {links.map(({ link, count }) => (
-            <div className="flex justify-between items-center" key={link}>
+            <div className="flex items-center justify-between" key={link}>
               <p className="text-muted-foreground">{link}</p>
               <p className="font-bold">{count}</p>
             </div>

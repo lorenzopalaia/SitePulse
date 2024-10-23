@@ -229,13 +229,13 @@ export default function New({ params }: { params: { setup: string } }) {
               <CardContent>
                 <Label>Domain</Label>
                 <div className="flex items-center">
-                  <div className="bg-secondary border-2 py-1 px-2 rounded rounded-r-none">
+                  <div className="px-2 py-1 border-2 rounded rounded-r-none bg-secondary">
                     https://
                   </div>
                   <Input
                     type="text"
                     placeholder="example.com"
-                    className="w-full p-2 join-item border-l-0 rounded-l-none"
+                    className="w-full p-2 border-l-0 rounded-l-none join-item"
                     onChange={(e) => setDomain(e.target.value)}
                   />
                 </div>
@@ -244,7 +244,7 @@ export default function New({ params }: { params: { setup: string } }) {
                   className="w-full mt-4 font-bold"
                   onClick={() => handleAdd()}
                 >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                   {loading ? "Please wait" : "Add website"}
                 </Button>
               </CardContent>
@@ -262,7 +262,7 @@ export default function New({ params }: { params: { setup: string } }) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="relative">
-                <div className="bg-foreground/10 p-4 rounded-md break-all text-sm">
+                <div className="p-4 text-sm break-all rounded-md bg-foreground/10">
                   <code>
                     {`<script defer data-website-id="${id}" data-domain="${domain}" src="${origin}/js/script.js"></script>`}
                   </code>
@@ -282,7 +282,7 @@ export default function New({ params }: { params: { setup: string } }) {
                   className="w-full mt-4 font-bold"
                   onClick={() => handleInstall()}
                 >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                   {loading ? "Please wait" : "Check installation"}
                 </Button>
               </CardContent>

@@ -15,7 +15,7 @@ export default function Pages({
       <CardContent>
         <div className="flex flex-col gap-4">
           {pages.map(({ page, count }) => (
-            <div className="flex justify-between items-center" key={page}>
+            <div className="flex items-center justify-between" key={page}>
               <p className="text-muted-foreground">{page}</p>
               <p className="font-bold">{count}</p>
             </div>

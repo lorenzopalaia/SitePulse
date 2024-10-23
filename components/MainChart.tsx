@@ -93,20 +93,20 @@ export default function MainChart({ timestamps, stats }: ComponentProps) {
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="grid grid-cols-3 md:grid-cols-5 justify-between gap-4 mb-6 px-4">
+        <div className="grid justify-between grid-cols-3 gap-4 px-4 mb-6 md:grid-cols-5">
           {formattedStats.map(({ title, value, isLive }, index) => (
             <div key={title} className={index !== 0 ? "flex gap-4" : ""}>
               {index !== 0 && (
                 <Separator
                   orientation="vertical"
-                  className="h-12 hidden md:block"
+                  className="hidden h-12 md:block"
                 />
               )}
               <StatItem title={title} value={value} isLive={isLive} />
             </div>
           ))}
         </div>
-        <ChartContainer config={chartConfig} className="h-96 w-full">
+        <ChartContainer config={chartConfig} className="w-full h-96">
           <AreaChart accessibilityLayer data={formattedChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
@@ -163,7 +163,7 @@ function StatItem({
 }) {
   return (
     <div className="flex flex-col">
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2">
         <h3 className="text-sm text-muted-foreground">{title}</h3>
         {isLive && <PulseDot />}
       </div>
