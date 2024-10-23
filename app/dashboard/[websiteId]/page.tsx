@@ -183,8 +183,9 @@ export default async function Dashboard({
   }));
 
   return (
-    <div className="container mx-auto py-12">
+    <div className="container py-12 mx-auto">
       <div className="mx-8">
+        <h1 className="pb-8 text-xl font-semibold">{website.domain}</h1>
         <MainChart
           timestamps={eventsTimestamps}
           stats={{
@@ -195,7 +196,7 @@ export default async function Dashboard({
             liveVisitors,
           }}
         />
-        <div className="grid grid-cols-1 lg:grid-cols-2 pt-8 gap-8">
+        <div className="grid grid-cols-1 gap-8 pt-8 lg:grid-cols-2">
           <Referrers data={referrers} />
           <Pages data={pages} />
           <ExternalLinks data={externalLinks} />
