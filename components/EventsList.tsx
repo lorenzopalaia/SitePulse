@@ -2,6 +2,17 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTrigger,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { getCountryFlag } from "@/utils/countryUtils";
 
@@ -41,9 +52,12 @@ export default function Events({
 
   const [, setUser] = useState<User | null>(null);
 
-  //! Time depends on the server timezone
-  //! Chart is showing the data in the correct timezone
-  //! But the events are shown in the server timezone
+  // * This is the event id to be deleted
+  const [event, setEvent] = useState<string>("");
+
+  // ! Time depends on the server timezone
+  // ! Chart is showing the data in the correct timezone
+  // ! But the events are shown in the server timezone
   const [events, setEvents] = useState(data);
 
   useEffect(() => {
@@ -89,54 +103,79 @@ export default function Events({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Events</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-64">
-          {events.map((event) => (
-            <div
-              key={event.id}
-              className="flex justify-between gap-2 items-center"
+    <>
+      <AlertDialog>
+        <Card>
+          <CardHeader>
+            <CardTitle>Events</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-64">
+              {events.map((event) => (
+                <div
+                  key={event.id}
+                  className="flex justify-between gap-2 items-center"
+                >
+                  <div>
+                    <span className="text-muted-foreground">
+                      [{event.created_at}]
+                    </span>{" "}
+                    {getCountryFlag(event.extra_data?.country)}{" "}
+                    <span className="font-bold">{event.event_type}</span>
+                    {event.event_type === "pageview" && (
+                      <span className="italic">
+                        {" "}
+                        @{" "}
+                        {new URL(event.href).pathname +
+                          new URL(event.href).hash}
+                      </span>
+                    )}
+                    {event.event_type === "external_link" && (
+                      <span className="italic">
+                        {" "}
+                        to {new URL(event.extra_data.url).hostname}
+                      </span>
+                    )}
+                    {event.event_type === "internal_link" && (
+                      <span className="italic">
+                        {" "}
+                        to{" "}
+                        {new URL(event.extra_data.url).pathname +
+                          new URL(event.extra_data.url).hash}
+                      </span>
+                    )}
+                  </div>
+                  <AlertDialogTrigger asChild>
+                    <X
+                      className="mr-2 cursor-pointer"
+                      onClick={() => setEvent(event.id)}
+                    />
+                  </AlertDialogTrigger>
+                </div>
+              ))}
+            </ScrollArea>
+          </CardContent>
+        </Card>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              event.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                handleDelete(event);
+              }}
             >
-              <div>
-                <span className="text-muted-foreground">
-                  [{event.created_at}]
-                </span>{" "}
-                {getCountryFlag(event.extra_data?.country)}{" "}
-                <span className="font-bold">{event.event_type}</span>
-                {event.event_type === "pageview" && (
-                  <span className="italic">
-                    {" "}
-                    @ {new URL(event.href).pathname + new URL(event.href).hash}
-                  </span>
-                )}
-                {event.event_type === "external_link" && (
-                  <span className="italic">
-                    {" "}
-                    to {new URL(event.extra_data.url).hostname}
-                  </span>
-                )}
-                {event.event_type === "internal_link" && (
-                  <span className="italic">
-                    {" "}
-                    to{" "}
-                    {new URL(event.extra_data.url).pathname +
-                      new URL(event.extra_data.url).hash}
-                  </span>
-                )}
-              </div>
-              <X
-                className="mr-2 cursor-pointer"
-                onClick={() => {
-                  handleDelete(event.id);
-                }}
-              />
-            </div>
-          ))}
-        </ScrollArea>
-      </CardContent>
-    </Card>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

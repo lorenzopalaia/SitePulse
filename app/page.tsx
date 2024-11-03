@@ -87,7 +87,7 @@ export default async function Home() {
             </Button>
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-8 pt-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 py-8 sm:grid-cols-2 lg:grid-cols-3">
           {websitesWithVisitors &&
             websitesWithVisitors.map((website) => (
               <Link key={website.id} href={`/dashboard/${website.id}`}>
