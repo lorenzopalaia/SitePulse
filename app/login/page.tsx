@@ -53,21 +53,16 @@ export default function LoginPage() {
 
   const toast = useToast();
 
-  async function handleSubmit(
-    values: z.infer<typeof formSchema>,
-    action: "login" | "signup"
-  ) {
+  async function handleSubmit(values: z.infer<typeof formSchema>) {
     const { email, password } = values;
 
-    let error;
-    if (action === "login") {
-      ({ error } = await supabase.auth.signInWithPassword({ email, password }));
-    } else {
-      ({ error } = await supabase.auth.signUp({ email, password }));
-    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
-      console.error(`Error during ${action}:`, error.message);
+      console.error(`Error during login:`, error.message);
       toast.toast({
         variant: "destructive",
         title: "Error",
@@ -116,21 +111,8 @@ export default function LoginPage() {
               )}
             />
             <div className="flex space-x-4">
-              <Button
-                type="button"
-                onClick={form.handleSubmit((values) =>
-                  handleSubmit(values, "login")
-                )}
-              >
+              <Button type="button" onClick={form.handleSubmit(handleSubmit)}>
                 Log in
-              </Button>
-              <Button
-                type="button"
-                onClick={form.handleSubmit((values) =>
-                  handleSubmit(values, "signup")
-                )}
-              >
-                Sign up
               </Button>
             </div>
           </form>
