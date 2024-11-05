@@ -10,6 +10,12 @@ import ExternalLinks from "@/components/ExternalLinks";
 import InternalLinks from "@/components/InternalLinks";
 import EventsList from "@/components/EventsList";
 
+import Link from "next/link";
+
+import { ArrowLeft } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
 export default async function Dashboard({
   params,
 }: {
@@ -185,7 +191,13 @@ export default async function Dashboard({
   return (
     <div className="container py-12 mx-auto">
       <div className="mx-8">
-        <h1 className="pb-8 text-xl font-semibold">{website.domain}</h1>
+        <Link href="/">
+          <Button variant="secondary" className="font-bold">
+            <ArrowLeft size={16} className="mr-2" />
+            Dashobard
+          </Button>
+        </Link>
+        <h1 className="pb-8 pt-4 text-xl font-semibold">{website.domain}</h1>
         <MainChart
           timestamps={eventsTimestamps}
           stats={{
