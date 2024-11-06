@@ -101,7 +101,7 @@ export async function POST(request: Request) {
           value: userAgent || "Unknown User Agent",
         },
       ],
-      color: 0x3ba55c,
+      color: 0x46d4e8,
     });
 
     return NextResponse.json(
