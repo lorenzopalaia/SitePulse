@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 
+import { DiscordClient } from "@/utils/discordClient";
+
 // @ts-expect-error missing types
 import UserAgent from "user-agent";
 
@@ -18,6 +20,8 @@ export async function OPTIONS() {
 
 export async function POST(request: Request) {
   const supabase = createClient();
+
+  const discord = new DiscordClient();
 
   try {
     const body = await request.json();
@@ -74,7 +78,30 @@ export async function POST(request: Request) {
       throw error;
     }
 
-    // Risposta in caso di successo
+    await discord.sendEmbed({
+      title: `New event recorded: ${type}`,
+      description: `Visitor: ${visitorId}\nSession: ${sessionId}`,
+      fields: [
+        {
+          name: "Domain",
+          value: domain,
+        },
+        {
+          name: "Referrer",
+          value: referrer || "None",
+        },
+        {
+          name: "Location",
+          value: `${city}, ${region}, ${country}`,
+        },
+        {
+          name: "User Agent",
+          value: userAgent,
+        },
+      ],
+      color: 0x00ff00,
+    });
+
     return NextResponse.json(
       { message: "Event recorded successfully" },
       { status: 200 }
