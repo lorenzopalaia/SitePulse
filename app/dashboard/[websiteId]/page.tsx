@@ -194,7 +194,7 @@ export default async function Dashboard({
         <Link href="/">
           <Button variant="secondary" className="font-bold">
             <ArrowLeft size={16} className="mr-2" />
-            Dashobard
+            Dashboard
           </Button>
         </Link>
         <h1 className="pb-8 pt-4 text-xl font-semibold">{website.domain}</h1>
