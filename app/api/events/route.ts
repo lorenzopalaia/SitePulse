@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 
 import { DiscordClient } from "@/utils/discordClient";
 
+import { getCountryFlag } from "@/utils/countryUtils";
+
 // @ts-expect-error missing types
 import UserAgent from "user-agent";
 
@@ -92,14 +94,14 @@ export async function POST(request: Request) {
         },
         {
           name: "Location",
-          value: `${city}, ${region}, ${country}`,
+          value: `${getCountryFlag(country || "")} ${city || "Unknown City"}`,
         },
         {
           name: "User Agent",
-          value: userAgent,
+          value: userAgent || "Unknown User Agent",
         },
       ],
-      color: 0x00ff00,
+      color: 0x3ba55c,
     });
 
     return NextResponse.json(
