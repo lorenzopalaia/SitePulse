@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     const headersList = headers();
     const ip = headersList.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
     const country = headersList.get("x-vercel-ip-country") || null;
-    const city = headersList.get("x-vercel-ip-city") || null;
+    const city = headersList.get("x-vercel-ip-city").replaceAll("%20," ") || null;
     const region = headersList.get("x-vercel-ip-country-region") || null;
 
     const { error } = await supabase.from("events").insert([
