@@ -83,23 +83,13 @@ export async function POST(request: Request) {
 
     await discord.sendEmbed({
       title: `New event recorded: ${type}`,
-      description: `Visitor: ${visitorId}\nSession: ${sessionId}`,
+      description: `Location: ${getCountryFlag(country || "")} ${
+        city || "Unknown City"
+      }\nDomain: ${domain}`,
       fields: [
-        {
-          name: "Domain",
-          value: domain,
-        },
         {
           name: "Referrer",
           value: referrer || "None",
-        },
-        {
-          name: "Location",
-          value: `${getCountryFlag(country || "")} ${city || "Unknown City"}`,
-        },
-        {
-          name: "User Agent",
-          value: userAgent || "Unknown User Agent",
         },
       ],
       color: 0x46d4e8,
