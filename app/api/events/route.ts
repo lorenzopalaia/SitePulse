@@ -81,17 +81,26 @@ export async function POST(request: Request) {
       throw error;
     }
 
+    const embedFields = [
+      {
+        name: "Referrer",
+        value: referrer || "None",
+      },
+    ];
+
+    if (extraData.url) {
+      embedFields.push({
+        name: "URL",
+        value: extraData.url,
+      });
+    }
+
     await discord.sendEmbed({
       title: `New event recorded: ${type}`,
       description: `Location: ${getCountryFlag(country || "")} ${
         city || "Unknown City"
       }\nDomain: ${domain}`,
-      fields: [
-        {
-          name: "Referrer",
-          value: referrer || "None",
-        },
-      ],
+      fields: embedFields,
       color: 0x46d4e8,
     });
 
