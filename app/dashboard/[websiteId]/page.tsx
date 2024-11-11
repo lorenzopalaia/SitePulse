@@ -8,6 +8,8 @@ import Referrers from "@/components/Referrers";
 import Pages from "@/components/Pages";
 import ExternalLinks from "@/components/ExternalLinks";
 import InternalLinks from "@/components/InternalLinks";
+import Countries from "@/components/Countries";
+import OperatingSystems from "@/components/OperatingSystems";
 import EventsList from "@/components/EventsList";
 
 import Link from "next/link";
@@ -188,6 +190,26 @@ export default async function Dashboard({
     count,
   }));
 
+  let countries = events.reduce((acc, event) => {
+    const country = event.extra_data.country || "Unknown";
+    acc[country] = (acc[country] || 0) + 1;
+    return acc;
+  }, {});
+  countries = Object.entries(countries).map(([country, count]) => ({
+    country,
+    count,
+  }));
+
+  let operatingSystems = events.reduce((acc, event) => {
+    const os = event.extra_data.os || "Unknown";
+    acc[os] = (acc[os] || 0) + 1;
+    return acc;
+  }, {});
+  operatingSystems = Object.entries(operatingSystems).map(([os, count]) => ({
+    os,
+    count,
+  }));
+
   return (
     <div className="container py-12 mx-auto">
       <div className="mx-8">
@@ -213,6 +235,8 @@ export default async function Dashboard({
           <Pages data={pages} />
           <ExternalLinks data={externalLinks} />
           <InternalLinks data={internalLinks} />
+          <Countries data={countries} />
+          <OperatingSystems data={operatingSystems} />
         </div>
         <div className="pt-8">
           <EventsList data={events} />
