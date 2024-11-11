@@ -81,12 +81,7 @@ export async function POST(request: Request) {
       throw error;
     }
 
-    const embedFields = [
-      {
-        name: "Referrer",
-        value: referrer || "None",
-      },
-    ];
+    const embedFields = [];
 
     if (extraData.url) {
       embedFields.push({
@@ -94,6 +89,11 @@ export async function POST(request: Request) {
         value: extraData.url,
       });
     }
+
+    embedFields.push({
+      name: "Referrer",
+      value: referrer || "None",
+    });
 
     await discord.sendEmbed({
       title: `New event recorded: ${type}`,

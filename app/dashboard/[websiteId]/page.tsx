@@ -210,6 +210,26 @@ export default async function Dashboard({
     count,
   }));
 
+  /* let browsers = events.reduce((acc, event) => {
+    const browser = event.extra_data.browser || "Unknown";
+    acc[browser] = (acc[browser] || 0) + 1;
+    return acc;
+  }, {});
+  browsers = Object.entries(browsers).map(([browser, count]) => ({
+    browser,
+    count,
+  })); */
+
+  /* let devices = events.reduce((acc, event) => {
+    const device = event.extra_data.device || "Unknown";
+    acc[device] = (acc[device] || 0) + 1;
+    return acc;
+  }, {});
+  devices = Object.entries(devices).map(([device, count]) => ({
+    device,
+    count,
+  })); */
+
   return (
     <div className="container py-12 mx-auto">
       <div className="mx-8">
