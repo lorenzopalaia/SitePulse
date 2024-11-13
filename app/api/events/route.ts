@@ -38,6 +38,13 @@ export async function POST(request: Request) {
       extraData,
     } = body;
 
+    if (href && href.includes("localhost")) {
+      return NextResponse.json(
+        { error: "Localhost URLs are not allowed" },
+        { status: 400 }
+      );
+    }
+
     if (!websiteId || !visitorId || !sessionId || !domain || !type) {
       return NextResponse.json(
         { error: "Missing required fields" },
