@@ -9,17 +9,6 @@ import { getCountryFlag } from "@/utils/countryUtils";
 // @ts-expect-error missing types
 import UserAgent from "user-agent";
 
-export async function OPTIONS() {
-  const response = NextResponse.json(
-    { message: "Preflight request successful" },
-    { status: 200 }
-  );
-  response.headers.set("Access-Control-Allow-Origin", "*"); // Consenti richieste da qualsiasi origine
-  response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-  response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-  return response;
-}
-
 export async function POST(request: Request) {
   const supabase = createClient();
 

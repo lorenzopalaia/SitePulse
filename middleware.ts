@@ -6,7 +6,9 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/api/events") ||
     request.nextUrl.pathname.startsWith("/js/script.js")
   ) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    return response;
   }
 
   return await updateSession(request);
