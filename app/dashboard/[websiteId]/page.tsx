@@ -18,6 +18,10 @@ import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
+//! There is an error here:
+//! Type error: Type '{ params: { websiteId: string; }; }' does not satisfy the constraint 'PageProps'.
+//!   Types of property 'params' are incompatible.
+//!     Type '{ websiteId: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
 export default async function Dashboard({
   params,
 }: {
